@@ -5,3 +5,9 @@ body {
     color: #fff;
     line-height: 1.6;
 }
+
+#padre {
+    margin-top: 20px;
+    padding: 15px;
+    border: 2px solid fuchsia;
+}

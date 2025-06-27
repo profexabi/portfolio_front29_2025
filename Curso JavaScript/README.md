@@ -1,5 +1,242 @@
 # Curso JavaScript
 
+## JavaScript VIII
+```js
+////////////////////
+// JavaScript VII //
+// JSON, asincronia, promesas y fetch, async-await y try/catch
+
+
+///////////
+// JSON //
+/*
+JavaScript Object Notation o JSON es un formato para enviar e intercambiar datos en internet
+Usa la notacion de objetos de JavaScript, pero es independiente de lenguaje y es un formato super ligero
+*/
+
+// Objeto JavaScript normal
+let alumno = {
+    nombre: "Nicolas",
+    edad: 30,
+    aprobado: true
+};
+
+console.log(alumno);
+
+// Convertir a JSON para enviar datos
+let jsonAlumno = JSON.stringify(alumno);
+console.log(jsonAlumno);
+
+// Convertir JSON a objeto para recibir datos
+let objetoAlumno = JSON.parse(jsonAlumno);
+console.log(objetoAlumno);
+console.log(objetoAlumno.nombre);
+
+
+////////////////////////////
+// Ejemplo de asincronia //
+
+console.log("Inicio");
+
+setTimeout(() => {
+    console.log("Esto se ejecuta despues de dos segundos");
+}, 2000);
+
+console.log("Final");
+
+
+///////////////////////
+// Promesas y fetch //
+
+// Usamos la manera tradicional de usar fetch, con promesas encadenadas .then()
+/*
+fetch("https://jsonplaceholder.typicode.com/users") // 1. Hacemos una peticion a una URL para traer datos en texto plano (JSON) 
+    .then(respuesta => respuesta.json())            // 2. Parseamos estos datos para poder trabajar con ellos
+    .then(data => console.table(data))              // 3. Ahora hacemos operaciones con esta informacion ya procesada
+    .catch(error => console.error(error));          // 4. En caso de fallar alguno de los pasos anteriores, imprimiremos un mensaje de error por consola
+*/
+
+let contenedorUsuarios = document.getElementById("contenedor-usuarios");
+
+// Usamos la sintaxis mas moderna y limpia de manejar operaciones asincronas, con async/await
+async function cargarUsuarios() {
+
+    try {
+        // 1. Hacemos una peticion a una URL para traer datos en texto plano (JSON) 
+        let respuesta = await fetch("https://jsonplaceholder.typicode.com/users");
+    
+        // 2. Parseamos estos datos para poder trabajar con ellos
+        let datos = await respuesta.json();
+    
+        console.table(datos);
+
+        mostrarUsuarios(datos);
+
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+
+function mostrarUsuarios(datos) {
+    let htmlUsuarios = "";
+
+    datos.forEach(usuario => {
+        htmlUsuarios += `
+            <li> Nombre: <strong>${usuario.name}</strong> / Telefono: <i>${usuario.phone}</i></li>
+        `;
+    })
+
+    contenedorUsuarios.innerHTML = htmlUsuarios;
+}
+
+cargarUsuarios();
+```
+
+---
+
+## Javascript VI
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mi página</title>
+    </head>
+    <body>
+        <h1>Bienvenidos</h1>
+        <p>Este es un párrafo</p>
+    </body>
+</html>
+
+<!--
+• document
+    ◦ html
+        ▪ head
+            ▪ title
+        ▪ body
+            ▪ h1
+            ▪ p
+-->
+```
+
+```js
+////////////////////
+// JavaScript VI //
+// Manipulacion del DOM en JavaScript y eventos
+
+/* El DOM (Document Object Model) es la forma en la que se estructuran las paginas web en el navegador
+// https://imgs.search.brave.com/v7sJ_jxpQQElXG-cqxdHi00rZxAxdKYr0DN7La9Mg2M/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cGllcnJlLWdpcmF1/ZC5jb20vd3AtY29u/dGVudC91cGxvYWRz/LzIwMTkvMTEvamF2/YXNjcmlwdC1yZXBy/ZXNlbnRhdGlvbi1k/b20uanBn
+
+- JavaScript puede acceder y modificar cualquier elemento del DOM utilizando el objeto global document
+- Modificar el contenido de textos, atributos, clases
+- Añadir o eliminar elementos del DOM
+- Escuchar eventos de usuario (clicks, teclado, etc)
+*/
+
+//////////////////////////////////
+// Seleccionado elementos HTML //
+
+// getElementById() -> Selecciona un elemento por su id
+let titulo = document.getElementById("titulo");
+
+console.log(titulo.textContent); // Titulo principal
+
+// querySelector() -> Selecciona el primer elemento y querySelectorAll() -> Selecciona TODOS los elementos
+let primerParrafo = document.querySelector(".mensaje"); // Seleccionamos el primer elemento que coincida con un selector CSS
+console.log(primerParrafo.textContent);
+
+let parrafos = document.querySelectorAll(".mensaje"); // Seleccionamos TODOS los elementos y nos devuelve un array (realmente es una NodeList)
+parrafos.forEach(parrafo => console.log(parrafo.textContent));
+
+
+
+////////////////////////////////////////
+// Modificando contenido y atributos //
+/*
+- textContent: Modificar el texto dentro de un elemento
+- innerHTML: Modificar el contenido HTML dentro de un elemento
+- setAttribute: Modificar los atributos de un elemento
+- style: Cambiar el estilo CSen linea de un elemento
+*/
+
+let parrafo = document.getElementById("parrafo");
+
+// Cambiar el texto
+parrafo.textContent = "Este es un nuevo texto modificado desde JavaScript";
+
+// Introducir HTML
+parrafo.innerHTML = "<strong>Este es un HTML agregado desde JavaScript</strong>";
+
+
+
+let boton = document.getElementById("boton");
+
+// Cambiar el atributo id
+boton.setAttribute("id", "nuevoID");
+
+boton.style.backgroundColor = "green";
+
+
+
+//////////////
+// Eventos //
+/*
+U evento es una señal que se envia cuando ocurre una interacion o cambio en el documento (click, pulsacion de tecla, mover el mouse, etc). JavaScript nos permite escuchar estos eventos y ejecutar funciones especificas cuando suceden
+
+    • Eventos de mouse: click , dblclick , mouseover , mouseout , mousemove
+    • Eventos de teclado: keydown , keyup 
+    • Eventos de formulario: submit , change , input , focus
+    • Eventos de ventana: resize , scroll , load , unload
+*/
+
+// Escuchar el evento click
+boton.addEventListener("click", function() {
+    console.log("Holis, me hiciste click, queres algo flaco?")
+})
+
+let input = document.getElementById("input");
+
+// Escuchar el evento keydown
+input.addEventListener("keydown", function(event) { // Gracias al objeto event, accedemos a informacion del evento
+    console.log(`Tecla presionada: ${event.key}`);
+})
+
+/////////////////////////////
+// Propagacion de eventos //
+/*
+Cuando ocurre un evento, este se propaga a traves del DOM en dos fases
+- Fase de captura: de arriba para abajo
+- Fase de burbuja: de abajo para arriba
+
+Podremos detener la propagacion de un evento usando el metodo event.stopPropagation()
+*/
+
+let padre = document.getElementById("padre");
+let hijo = document.getElementById("hijo");
+
+// Escuchar el click en el div padre
+padre.addEventListener("click", function() {
+    console.log("Se hizo click en el div padre");
+});
+
+// Para evitar la propagacion de eventos y que el evento del hijo active el evento del padre, usaremos event.stopPropagation()
+hijo.addEventListener("click", function(event) {
+    event.stopPropagation();
+    console.log("Hiciste click en el boton hijo");
+});
+
+// event.preventDefault() se usa para evitar el comportamiento predeterminado de un elemnto, por ejemplo, para evitar que un formulario se envie al hacer click en un boton enviar
+let formulario = document.getElementById("formulario");
+
+// Evitamos que el formulario se envie
+formulario.addEventListener("submit", function(event) {
+    event.preventDefault(); // Evitamos el envio por defecto del formulario
+    alert("Formulario no enviado");
+});
+```
+
+---
+
 ## JavaScript V
 ```js
 ///////////////////
